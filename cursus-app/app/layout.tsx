@@ -29,10 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
-        <body className="bg-ink text-ivory font-sans">{children}</body>
-      </html>
-    </ClerkProvider>
+<ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+  <html lang="en" className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
+    <body className="bg-ink text-ivory font-sans">{children}</body>
+  </html>
+</ClerkProvider>
   );
 }
