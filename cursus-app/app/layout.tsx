@@ -17,9 +17,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Cursus — A guided route to your university application",
+  title: "Cursus — The Supercurricular Roadmap",
   description:
-    "Cursus turns super-curricular reading into a structured, AI-coached sprint. Built for UCAS and the Common App alike.",
+    "Cursus turns super-curricular reading into a structured, AI-coached sprint. Built for UCAS, the Common App and international university applications alike.",
 };
 
 export default function RootLayout({
