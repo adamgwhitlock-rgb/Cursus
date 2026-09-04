@@ -1,3 +1,4 @@
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { PrimaryButton } from "./ui";
 
 export default function Nav() {
@@ -15,10 +16,19 @@ export default function Nav() {
         <span>Pricing</span>
       </div>
       <div className="flex items-center gap-3">
-        <span className="hidden sm:inline text-sm text-muted cursus-focus">
-          Log in
-        </span>
-        <PrimaryButton>Start free</PrimaryButton>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <span className="hidden sm:inline text-sm text-muted cursor-pointer cursus-focus">
+              Log in
+            </span>
+          </SignInButton>
+          <SignInButton mode="modal">
+            <PrimaryButton>Start free</PrimaryButton>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <UserButton afterSignOutUrl="/" />
+        </SignedIn>
       </div>
     </div>
   );
