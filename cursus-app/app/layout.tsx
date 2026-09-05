@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider publishableKey="pk_test_c3VpdGVkLWxhYnJhZG9yLTMzMzYuY2xlcmsuYWNjb3VudHMuZGV2">
+    <ClerkProvider publishableKey="pk_test_c3VpdGVkLWxhYnJhZG9yLTMzMzYuY2xlcmsuYWNjb3VudHMuZGV2JA">
       <html lang="en" className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
         <body className="bg-ink text-ivory font-sans">{children}</body>
       </html>
