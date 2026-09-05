@@ -18,7 +18,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Cursus — The AI-Powered Super-Curricular Roadmap",
+  title: "Cursus — A guided route to your university application",
   description:
     "Cursus turns super-curricular reading into a structured, AI-coached sprint. Built for UCAS and the Common App alike.",
 };
@@ -30,8 +30,8 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body>{children}</body>
+      <html lang="en" className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
+        <body className="bg-ink text-ivory font-sans">{children}</body>
       </html>
     </ClerkProvider>
   );
