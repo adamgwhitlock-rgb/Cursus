@@ -7,6 +7,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+    {
+  "name": "cursus",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    ...
+  }
+}
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.0",
