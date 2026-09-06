@@ -1,6 +1,8 @@
 import { getSprints } from "@/utils/queries";
 import SprintInteractiveView from "./SprintInteractiveView";
 
+export const dynamic = "force-dynamic";
+
 export default async function SprintPage() {
   const sprints = await getSprints();
 
