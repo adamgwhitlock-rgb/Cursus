@@ -14,12 +14,12 @@ export async function fetchLiveLegalResources(topic: string, weekNumber: number)
       contents: {
         highlights: true,
       },
-    });
+    } as any);
 
-    return result.results.map((r: any) => ({
+    return (result.results || []).map((r: any) => ({
       title: r.title,
       url: r.url,
-      snippet: r.highlights?.[0] || "Verified live legal reference document.",
+      snippet: r.highlights?.[0] || r.text || "Verified live legal reference document.",
     }));
   } catch (error) {
     console.error("Exa search error:", error);
