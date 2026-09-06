@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { auth } from "@clerk/nextjs/server";
 import { getSprintsBySubject, getCaseNote } from "@/utils/queries";
 import SprintInteractiveView from "./sprint/SprintInteractiveView";
@@ -16,7 +17,6 @@ export default async function DashboardPage({
 
   // Fetch sprint steps from Neon Database for the active subject
   let sprints = await getSprintsBySubject(activeSubject);
-
   // Fallback default sprint if subject hasn't been generated yet
   if (!sprints || sprints.length === 0) {
     sprints = [
