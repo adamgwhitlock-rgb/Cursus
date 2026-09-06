@@ -1,36 +1,34 @@
 import Exa from "exa-js";
 
-const exa = new Exa(process.env.EXA_API_KEY || "");
+const exa = new Exa(process.env.EXA_API_KEY);
 
-export async function fetchLiveLegalResources(topic: string, weekNumber: number) {
-  // Target digestible case summaries, blog breakdowns, and expert commentary
-  const query = weekNumber === 1
-    ? `accessible case summary legal analysis explanation ${topic}`
-    : `appellate court commentary expert legal blog analysis ${topic}`;
-
+export async function fetchSprintResources(subject: string) {
   try {
-    const result = await exa.search(query, {
-      type: "auto",
-      numResults: 3,
-      // Restrict results strictly to free, high-quality, open-access educational sources
-      includeDomains: [
-        "law.ox.ac.uk",       // Oxford Law Faculty Blog (peer commentary)
-        "theconversation.com", // Rigorous academic journalism accessible to post-16 students
-        "supremecourt.uk",    // Official case summaries (concise, non-book length)
-        "parliament.uk",      // UK Parliament research briefings
-      ],
-      contents: {
-        highlights: true,
-      },
-    } as any);
+    // Broaden the search query so Exa easily matches academic articles or introductory texts
+    const week1Result = await exa.searchAndContents(
+      `foundational text or core overview of ${subject} academic discipline`,
+      {
+        type: "neural",
+        numResults: 1,
+        text: { maxCharacters: 1000 },
+      }
+    );
 
-    return (result.results || []).map((r: any) => ({
-      title: r.title,
-      url: r.url,
-      snippet: r.highlights?.[0] || r.text?.substring(0, 200) || "Verified open-access legal commentary.",
-    }));
+    const week2Result = await exa.searchAndContents(
+      `critical perspective debate or counter argument in ${subject}`,
+      {
+        type: "neural",
+        numResults: 1,
+        text: { maxCharacters: 1000 },
+      }
+    );
+
+    return {
+      week1Source: week1Result.results[0] || null,
+      week2Critique: week2Result.results[0] || null,
+    };
   } catch (error) {
     console.error("Exa search error:", error);
-    return [];
+    return null;
   }
 }
