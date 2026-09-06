@@ -12,20 +12,22 @@ interface Sprint {
 
 export default function SprintInteractiveView({ sprints }: { sprints: Sprint[] }) {
   const [activeWeek, setActiveWeek] = useState(1);
-  const [loadingLive, setLoadingLive] = useState(false);
-  const [liveResource, setLiveResource] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [liveResources, setLiveResources] = useState<any[]>([]);
 
   const currentStep = sprints.find((s) => s.week_number === activeWeek) || sprints[0];
 
-  const handleFetchLiveContent = async () => {
-    setLoadingLive(true);
-    // Simulate or call your live backend curation action
-    setTimeout(() => {
-      setLiveResource(
-        `Live verified open web reference for ${currentStep.subject}: Recent appellate brief and analysis updated for Week ${activeWeek}.`
-      );
-      setLoadingLive(false);
-    }, 600);
+  const handleFetchLive = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/search?topic=${encodeURIComponent(currentStep.subject)}&week=${activeWeek}`);
+      const data = await res.json();
+      setLiveResources(data.resources || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +39,7 @@ export default function SprintInteractiveView({ sprints }: { sprints: Sprint[] }
             key={item.id}
             onClick={() => {
               setActiveWeek(item.week_number);
-              setLiveResource(null);
+              setLiveResources([]);
             }}
             className={`p-4 rounded-xl text-left border transition-all ${
               activeWeek === item.week_number
@@ -59,18 +61,29 @@ export default function SprintInteractiveView({ sprints }: { sprints: Sprint[] }
         <h2 className="text-2xl font-serif mt-4 mb-2">{currentStep.title}</h2>
         <p className="text-zinc-300 mb-6">{currentStep.description}</p>
 
-        {liveResource && (
-          <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 mb-6 text-sm text-amber-200">
-            {liveResource}
+        {liveResources.length > 0 && (
+          <div className="space-y-3 mb-6">
+            {liveResources.map((res, idx) => (
+              <a
+                key={idx}
+                href={res.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 rounded-xl bg-black/40 border border-zinc-800 hover:border-amber-500/50 transition-all"
+              >
+                <h4 className="font-semibold text-amber-300 text-sm mb-1">{res.title}</h4>
+                <p className="text-xs text-zinc-400 line-clamp-2">{res.snippet}</p>
+              </a>
+            ))}
           </div>
         )}
 
         <button
-          onClick={handleFetchLiveContent}
-          disabled={loadingLive}
+          onClick={handleFetchLive}
+          disabled={loading}
           className="px-6 py-3 rounded-xl bg-amber-400 text-zinc-950 font-semibold hover:bg-amber-300 transition-colors disabled:opacity-50"
         >
-          {loadingLive ? "Scanning Live Sources..." : "Fetch Fresh Web Resources"}
+          {loading ? "Querying Exa Neural Index..." : "Fetch Fresh Web Resources"}
         </button>
       </div>
     </div>
