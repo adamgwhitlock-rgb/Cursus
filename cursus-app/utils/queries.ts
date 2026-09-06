@@ -1,21 +1,20 @@
-import sql from "@/utils/db";
+import sql from "./db";
 
-export interface Sprint {
-  id: number;
-  subject: string;
-  title: string;
-  week_number: number;
-  description: string;
+export async function getCaseNote(userId: string, subject: string) {
+  try {
+    const notes = await sql`
+      SELECT * FROM case_notes
+      WHERE user_id = ${userId} AND subject = ${subject}
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `;
+    return notes[0] || null;
+  } catch (error) {
+    console.error("Failed to fetch case note:", error);
+    return null;
+  }
 }
 
-export async function getSprints(): Promise<Sprint[]> {
-  try {
-    const sprints = await sql<Sprint[]>`SELECT * FROM sprints ORDER BY week_number ASC`;
-    return sprints;
-  } catch (error) {
-    console.error("Failed to fetch sprints:", error);
-    return [];
-  }
 export async function getSprintsBySubject(subject: string) {
   try {
     const sprints = await sql`
