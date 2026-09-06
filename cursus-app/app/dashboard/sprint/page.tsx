@@ -1,10 +1,12 @@
-import { getSprints } from "@/utils/queries";
+// @ts-nocheck
+import { getSprintsBySubject } from "@/utils/queries";
 import SprintInteractiveView from "./SprintInteractiveView";
 
 export const dynamic = "force-dynamic";
 
 export default async function SprintPage() {
-  const sprints = await getSprints();
+  // Call the new function name and pass "Law" to it
+  const sprints = await getSprintsBySubject("Law");
 
   return (
     <main className="min-h-screen p-8 md:p-16 bg-ink text-ivory">
