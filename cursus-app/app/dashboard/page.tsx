@@ -14,7 +14,6 @@ export default async function DashboardPage({
   const activeSubject = searchParams?.subject || "Law";
   const activeSystem = searchParams?.system || "UCAS (UK & Oxbridge)";
 
-  // Fetch live resources directly from Exa
   const exaData = await fetchSprintResources(activeSubject);
 
   const sprints = [
@@ -23,7 +22,7 @@ export default async function DashboardPage({
       subject: activeSubject,
       title: "Week 1: Read the Source",
       week_number: 1,
-      description: exaData?.week1Source?.text || `Analyze foundational primary material in ${activeSubject}.`,
+      description: exaData?.week1Source?.text || exaData?.week1Source?.snippet || `Analyze foundational primary material in ${activeSubject}.`,
       sourceUrl: exaData?.week1Source?.url || null,
       sourceTitle: exaData?.week1Source?.title || "Primary Academic Source",
     },
@@ -32,7 +31,7 @@ export default async function DashboardPage({
       subject: activeSubject,
       title: "Week 2: Watch & Cross-Examine",
       week_number: 2,
-      description: exaData?.week2Critique?.text || `Review secondary commentary and counter-arguments in ${activeSubject}.`,
+      description: exaData?.week2Critique?.text || exaData?.week2Critique?.snippet || `Review secondary commentary and counter-arguments in ${activeSubject}.`,
       sourceUrl: exaData?.week2Critique?.url || null,
       sourceTitle: exaData?.week2Critique?.title || "Expert Commentary & Critique",
     },
