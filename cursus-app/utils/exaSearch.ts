@@ -8,18 +8,18 @@ export async function fetchLiveLegalResources(topic: string, weekNumber: number)
     : `appellate court oral argument legal analysis commentary ${topic}`;
 
   try {
-    const result = await exa.search(query, {
+    const result = await exa.searchAndContents(query, {
       type: "auto",
       numResults: 3,
-      contents: {
+      text: {
         highlights: true,
       },
     });
 
-    return result.results.map((r) => ({
+    return result.results.map((r: any) => ({
       title: r.title,
       url: r.url,
-      snippet: r.highlights?.[0] || "Verified live legal reference document.",
+      snippet: r.highlights?.[0] || r.text?.substring(0, 150) || "Verified live legal reference document.",
     }));
   } catch (error) {
     console.error("Exa search error:", error);
