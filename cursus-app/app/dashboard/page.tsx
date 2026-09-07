@@ -16,13 +16,20 @@ export default async function DashboardPage({
 
   const exaData = await fetchSprintResources(activeSubject);
 
+  // Helper to clean up raw long text into a neat preview snippet
+  const sanitizeText = (rawText: string, fallback: string) => {
+    if (!rawText) return fallback;
+    const cleaned = rawText.replace(/([#*_[\]]|Copyright ©.*|Contents.*)/g, "").trim();
+    return cleaned.length > 250 ? cleaned.substring(0, 250) + "..." : cleaned;
+  };
+
   const sprints = [
     {
       id: 1,
       subject: activeSubject,
       title: "Week 1: Read the Source",
       week_number: 1,
-      description: exaData?.week1Source?.text || exaData?.week1Source?.snippet || `Analyze foundational primary material in ${activeSubject}.`,
+      description: sanitizeText(exaData?.week1Source?.text || exaData?.week1Source?.snippet, `Analyze foundational primary material in ${activeSubject}.`),
       sourceUrl: exaData?.week1Source?.url || null,
       sourceTitle: exaData?.week1Source?.title || "Primary Academic Source",
     },
@@ -31,7 +38,7 @@ export default async function DashboardPage({
       subject: activeSubject,
       title: "Week 2: Watch & Cross-Examine",
       week_number: 2,
-      description: exaData?.week2Critique?.text || exaData?.week2Critique?.snippet || `Review secondary commentary and counter-arguments in ${activeSubject}.`,
+      description: sanitizeText(exaData?.week2Critique?.text || exaData?.week2Critique?.snippet, `Review secondary commentary and counter-arguments in ${activeSubject}.`),
       sourceUrl: exaData?.week2Critique?.url || null,
       sourceTitle: exaData?.week2Critique?.title || "Expert Commentary & Critique",
     },
