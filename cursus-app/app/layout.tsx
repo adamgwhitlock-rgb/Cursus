@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { Fraunces, Space_Grotesk } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar";
+import IntroTour from "@/components/IntroTour";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600"],
-  display: "swap",
+  variable: "--font-inter",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "700"],
-  display: "swap",
+  variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {
-  title: "Cursus — A guided route to your university application",
-  description:
-    "Cursus turns super-curricular reading into a structured, AI-coached sprint. Built for UCAS and the Common App alike.",
+  title: "Cursus — University Admissions Command Center",
+  description: "Super-curricular sprints and AI interview preparation for global candidates.",
 };
 
 export default function RootLayout({
@@ -30,8 +27,17 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${fraunces.variable} ${spaceGrotesk.variable}`}>
-        <body className="bg-ink text-ivory font-sans">{children}</body>
+      <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+        <body className="bg-zinc-950 text-zinc-100 font-sans min-h-screen selection:bg-amber-500 selection:text-amber-950">
+          {/* Persistent global navigation header */}
+          <Navbar />
+          
+          {/* Main application content */}
+          <main>{children}</main>
+
+          {/* First-time visitor onboarding tour overlay */}
+          <IntroTour />
+        </body>
       </html>
     </ClerkProvider>
   );
