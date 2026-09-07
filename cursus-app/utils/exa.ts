@@ -2,17 +2,15 @@ import Exa from "exa-js";
 
 const exa = new Exa(process.env.EXA_API_KEY);
 
-export async function fetchSprintResources(subject: string, system: string = "UCAS") {
+export async function fetchSprintResources(
+  subject: string,
+  system: string = "UCAS",
+  university: string = "University of Oxford",
+  country: string = "United Kingdom"
+) {
   try {
-    // Tailor search context based on whether it's UK, US, or International
-    const systemPrompt = system.includes("Common App") || system.includes("US") 
-      ? "US holistic admissions faculty reading list" 
-      : system.includes("Global") || system.includes("European") 
-      ? "international university entrance criteria academic reading" 
-      : "Oxbridge super-curricular reading list";
-
     const week1Result = await exa.searchAndContents(
-      `foundational text ${subject} ${systemPrompt}`,
+      `primary source reading list ${subject} ${university} ${country}`,
       {
         type: "neural",
         numResults: 1,
@@ -21,7 +19,7 @@ export async function fetchSprintResources(subject: string, system: string = "UC
     );
 
     const week2Result = await exa.searchAndContents(
-      `critical perspective debate or interview question for ${subject} admissions`,
+      `interview critique counter argument ${subject} ${university}`,
       {
         type: "neural",
         numResults: 1,
@@ -34,7 +32,7 @@ export async function fetchSprintResources(subject: string, system: string = "UC
       week2Critique: week2Result.results[0] || null,
     };
   } catch (error) {
-    console.error("Exa global search error:", error);
+    console.error("Exa search error:", error);
     return null;
   }
 }
