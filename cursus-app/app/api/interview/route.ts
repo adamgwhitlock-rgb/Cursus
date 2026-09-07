@@ -1,39 +1,46 @@
 // @ts-nocheck
-import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export const maxDuration = 30;
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
-    const { messages, caseNote, subject } = await req.json();
+    const { messages, caseNote, subject, system } = await req.json();
 
-    const systemPrompt = `
-You are an elite, rigorous admissions tutor at Oxford University interviewing a candidate for ${subject || 'Law'}.
-The candidate has submitted the following 500-word case note/synthesis:
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-"${caseNote || 'No case note submitted.'}"
+    // Customize system prompt based on admissions framework
+    const persona = system?.includes("US") 
+      ? "You are an Ivy League Admissions Officer evaluating intellectual vitality, extracurricular leadership depth, and personal voice." 
+      : system?.includes("Global") 
+      ? "You are an international university admissions panelist evaluating cross-cultural academic reasoning." 
+      : "You are an Oxbridge Professor conducting a rigorous subject interview.";
 
-Your directive:
-1. Cross-examine the specific arguments, flaws, or assumptions made in their case note.
-2. NEVER ask generic questions (e.g., "Why do you want to study this?").
-3. Push back hard on their logic. If they make a claim, ask them to defend it against a specific counter-example.
-4. Keep your responses concise (2-3 sentences max) to simulate rapid-fire interview pressure.
-5. Maintain a cold, academic, intellectually demanding tone.
-    `;
-
-    const result = streamText({
-      model: openai('gpt-4o'),
-      system: systemPrompt,
-      messages,
+    const chat = model.startChat({
+      history: [
+        {
+          role: "user",
+          parts: [{ text: `Here is my academic synthesis on ${subject} for my ${system} application: "${caseNote}"` }],
+        },
+        {
+          role: "model",
+          parts: [{ text: `Thank you. ${persona} Let's begin the defense of your thesis.` }],
+        },
+      ],
     });
 
-    return result.toDataStreamResponse();
+    const lastMessage = messages[messages.length - 1].content;
+    const result = await chat.sendMessage(lastMessage);
+    const response = await result.response;
+    const text = response.text();
+
+    return new Response(JSON.stringify({ role: "assistant", content: text }), {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Interview API Error:", error);
-    return new Response(JSON.stringify({ error: "Failed to generate response" }), {
+    return new Response(JSON.stringify({ error: "Failed to process interview response" }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
