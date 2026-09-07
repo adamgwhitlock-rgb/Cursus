@@ -10,6 +10,8 @@ interface Sprint {
   title: string;
   week_number: number;
   description: string;
+  sourceUrl?: string | null;
+  sourceTitle?: string | null;
 }
 
 export default function SprintInteractiveView({ sprints }: { sprints: Sprint[] }) {
@@ -66,7 +68,24 @@ export default function SprintInteractiveView({ sprints }: { sprints: Sprint[] }
           Milestone {currentStep.week_number} of 4 
         </span>
         <h2 className="text-3xl font-serif mt-5 mb-3 text-zinc-100">{currentStep.title}</h2>
-        <p className="text-zinc-400 mb-8 text-sm leading-relaxed max-w-2xl">{currentStep.description}</p>
+        <p className="text-zinc-400 mb-6 text-sm leading-relaxed max-w-2xl">{currentStep.description}</p>
+
+        {/* Clickable Exa Source Link */}
+        {currentStep.sourceUrl && (
+          <div className="mb-8">
+            <a
+              href={currentStep.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 transition-all shadow-sm"
+            >
+              <span>Read Full Source: {currentStep.sourceTitle || "External Reference"}</span>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        )}
 
         {/* WEEK 3: 500-Word Case Note Editor */}
         {activeWeek === 3 && (
